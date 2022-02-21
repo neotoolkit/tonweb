@@ -30,16 +30,16 @@ See [these docs][pkg-url].
 
 [MIT License](LICENSE).
 
-[CI-img]: https://github.com/neotoolkit/tmp/workflows/CI/badge.svg
-[CI-url]: https://github.com/neotoolkit/tmp/actions
-[pkg-img]: https://pkg.go.dev/badge/neotoolkit/tmp
-[pkg-url]: https://pkg.go.dev/github.com/neotoolkit/tmp
-[reportcard-img]: https://goreportcard.com/badge/neotoolkit/tmp
-[reportcard-url]: https://goreportcard.com/report/neotoolkit/tmp
-[coverage-img]: https://codecov.io/gh/neotoolkit/tmp/branch/main/graph/badge.svg
-[coverage-url]: https://codecov.io/gh/neotoolkit/tmp
-[version-img]: https://img.shields.io/github/v/release/neotoolkit/tmp
-[version-url]: https://github.com/neotoolkit/tmp/releases
+[CI-img]: https://github.com/neotoolkit/tonweb/workflows/CI/badge.svg
+[CI-url]: https://github.com/neotoolkit/tonweb/actions
+[pkg-img]: https://pkg.go.dev/badge/neotoolkit/tonweb
+[pkg-url]: https://pkg.go.dev/github.com/neotoolkit/tonweb
+[reportcard-img]: https://goreportcard.com/badge/neotoolkit/tonweb
+[reportcard-url]: https://goreportcard.com/report/neotoolkit/tonweb
+[coverage-img]: https://codecov.io/gh/neotoolkit/tonweb/branch/main/graph/badge.svg
+[coverage-url]: https://codecov.io/gh/neotoolkit/tonweb
+[version-img]: https://img.shields.io/github/v/release/neotoolkit/tonweb
+[version-url]: https://github.com/neotoolkit/tonweb/releases
 
 ## Sponsors
 <p>

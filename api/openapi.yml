@@ -1,0 +1,1031 @@
+openapi: 3.0.2
+info:
+  title: TON HTTP API
+  description: |
+
+    This API enables HTTP access to TON blockchain - getting accounts and wallets information, looking up blocks and transactions, sending messages to the blockchain, calling get methods of smart contracts, and more.
+
+    In addition to REST API, all methods are available through [JSON-RPC endpoint](#json%20rpc)  with `method` equal to method name and `params` passed as a dictionary.
+
+    The response contains a JSON object, which always has a boolean field `ok` and either `error` or `result`. If `ok` equals true, the request was successful and the result of the query can be found in the `result` field. In case of an unsuccessful request, `ok` equals false and the error is explained in the `error`.
+
+    API Key should be sent either as `api_key` query parameter or `X-API-Key` header.
+  version: 2.0.0
+servers:
+  - url: /api/v2
+paths:
+  /getAddressInformation:
+    get:
+      tags:
+        - accounts
+      summary: Get Address Information
+      description: 'Get basic information about the address: balance, code, data, last_transaction_id.'
+      operationId: get_address_information_getAddressInformation_get
+      parameters:
+        - description: Identifier of target TON account in any form.
+          required: true
+          schema:
+            title: Address
+            type: string
+            description: Identifier of target TON account in any form.
+          name: address
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /getExtendedAddressInformation:
+    get:
+      tags:
+        - accounts
+      summary: Get Extended Address Information
+      description: Similar to previous one but tries to parse additional information for known contract types. This method is based on tonlib's function *getAccountState*. For detecting wallets we recommend to use *getWalletInformation*.
+      operationId: get_extended_address_information_getExtendedAddressInformation_get
+      parameters:
+        - description: Identifier of target TON account in any form.
+          required: true
+          schema:
+            title: Address
+            type: string
+            description: Identifier of target TON account in any form.
+          name: address
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /getWalletInformation:
+    get:
+      tags:
+        - accounts
+      summary: Get Wallet Information
+      description: 'Retrieve wallet information. This method parses contract state and currently supports more wallet types than getExtendedAddressInformation: simple wallet, standart wallet, v3 wallet, v4 wallet.'
+      operationId: get_wallet_information_getWalletInformation_get
+      parameters:
+        - description: Identifier of target TON account in any form.
+          required: true
+          schema:
+            title: Address
+            type: string
+            description: Identifier of target TON account in any form.
+          name: address
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /getTransactions:
+    get:
+      tags:
+        - accounts
+        - transactions
+      summary: Get Transactions
+      description: Get transaction history of a given address.
+      operationId: get_transactions_getTransactions_get
+      parameters:
+        - description: Identifier of target TON account in any form.
+          required: true
+          schema:
+            title: Address
+            type: string
+            description: Identifier of target TON account in any form.
+          name: address
+          in: query
+        - description: Maximum number of transactions in response.
+          required: false
+          schema:
+            title: Limit
+            type: integer
+            description: Maximum number of transactions in response.
+            default: 10
+          name: limit
+          in: query
+        - description: Logical time of transaction to start with, must be sent with *hash*.
+          required: false
+          schema:
+            title: Lt
+            type: integer
+            description: Logical time of transaction to start with, must be sent with *hash*.
+          name: lt
+          in: query
+        - description: Hash of transaction to start with, in *base64* or *hex* encoding , must be sent with *lt*.
+          required: false
+          schema:
+            title: Hash
+            type: string
+            description: Hash of transaction to start with, in *base64* or *hex* encoding , must be sent with *lt*.
+          name: hash
+          in: query
+        - description: Logical time of transaction to finish with (to get tx from *lt* to *to_lt*).
+          required: false
+          schema:
+            title: To Lt
+            type: integer
+            description: Logical time of transaction to finish with (to get tx from *lt* to *to_lt*).
+            default: 0
+          name: to_lt
+          in: query
+        - description: By default getTransaction request is processed by any available liteserver. If *archival=true* only liteservers with full history are used.
+          required: false
+          schema:
+            title: Archival
+            type: boolean
+            description: By default getTransaction request is processed by any available liteserver. If *archival=true* only liteservers with full history are used.
+            default: false
+          name: archival
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /getAddressBalance:
+    get:
+      tags:
+        - accounts
+      summary: Get Address Balance
+      description: Get balance (in nanotons) of a given address.
+      operationId: get_address_balance_getAddressBalance_get
+      parameters:
+        - description: Identifier of target TON account in any form.
+          required: true
+          schema:
+            title: Address
+            type: string
+            description: Identifier of target TON account in any form.
+          name: address
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /getAddressState:
+    get:
+      tags:
+        - accounts
+      summary: Get Address
+      description: Get state of a given address. State can be either *unitialized*, *active* or *frozen*.
+      operationId: get_address_getAddressState_get
+      parameters:
+        - description: Identifier of target TON account in any form.
+          required: true
+          schema:
+            title: Address
+            type: string
+            description: Identifier of target TON account in any form.
+          name: address
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /packAddress:
+    get:
+      tags:
+        - accounts
+      summary: Pack Address
+      description: Convert an address from raw to human-readable format.
+      operationId: pack_address_packAddress_get
+      parameters:
+        - description: Identifier of target TON account in raw form.
+          required: true
+          schema:
+            title: Address
+            type: string
+            description: Identifier of target TON account in raw form.
+          example: 0:83DFD552E63729B472FCBCC8C45EBCC6691702558B68EC7527E1BA403A0F31A8
+          name: address
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /unpackAddress:
+    get:
+      tags:
+        - accounts
+      summary: Unpack Address
+      description: Convert an address from human-readable to raw format.
+      operationId: unpack_address_unpackAddress_get
+      parameters:
+        - description: Identifier of target TON account in user-friendly form
+          required: true
+          schema:
+            title: Address
+            type: string
+            description: Identifier of target TON account in user-friendly form
+          example: EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N
+          name: address
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /getMasterchainInfo:
+    get:
+      tags:
+        - blocks
+      summary: Get Masterchain Info
+      description: Get up-to-date masterchain state.
+      operationId: get_masterchain_info_getMasterchainInfo_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /getConsensusBlock:
+    get:
+      tags:
+        - blocks
+      summary: Get Consensus Block
+      description: Get consensus block and its update timestamp.
+      operationId: get_consensus_block_getConsensusBlock_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /lookupBlock:
+    get:
+      tags:
+        - blocks
+      summary: Lookup Block
+      description: Look up block by either *seqno*, *lt* or *unixtime*.
+      operationId: lookup_block_lookupBlock_get
+      parameters:
+        - description: Workchain id to look up block in
+          required: true
+          schema:
+            title: Workchain
+            type: integer
+            description: Workchain id to look up block in
+          name: workchain
+          in: query
+        - description: Shard id to look up block in
+          required: true
+          schema:
+            title: Shard
+            type: integer
+            description: Shard id to look up block in
+          name: shard
+          in: query
+        - description: Block's height
+          required: false
+          schema:
+            title: Seqno
+            type: integer
+            description: Block's height
+          name: seqno
+          in: query
+        - description: Block's logical time
+          required: false
+          schema:
+            title: Lt
+            type: integer
+            description: Block's logical time
+          name: lt
+          in: query
+        - description: Block's unixtime
+          required: false
+          schema:
+            title: Unixtime
+            type: integer
+            description: Block's unixtime
+          name: unixtime
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /shards:
+    get:
+      tags:
+        - blocks
+      summary: Shards
+      description: Get shards information.
+      operationId: shards_shards_get
+      parameters:
+        - description: Masterchain seqno to fetch shards of.
+          required: true
+          schema:
+            title: Seqno
+            type: integer
+            description: Masterchain seqno to fetch shards of.
+          name: seqno
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /getBlockTransactions:
+    get:
+      tags:
+        - blocks
+        - transactions
+      summary: Get Block Transactions
+      description: Get transactions of the given block.
+      operationId: get_block_transactions_getBlockTransactions_get
+      parameters:
+        - required: true
+          schema:
+            title: Workchain
+            type: integer
+          name: workchain
+          in: query
+        - required: true
+          schema:
+            title: Shard
+            type: integer
+          name: shard
+          in: query
+        - required: true
+          schema:
+            title: Seqno
+            type: integer
+          name: seqno
+          in: query
+        - required: false
+          schema:
+            title: Root Hash
+            type: string
+          name: root_hash
+          in: query
+        - required: false
+          schema:
+            title: File Hash
+            type: string
+          name: file_hash
+          in: query
+        - required: false
+          schema:
+            title: After Lt
+            type: integer
+          name: after_lt
+          in: query
+        - required: false
+          schema:
+            title: After Hash
+            type: string
+          name: after_hash
+          in: query
+        - required: false
+          schema:
+            title: Count
+            type: integer
+            default: 40
+          name: count
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /getBlockHeader:
+    get:
+      tags:
+        - blocks
+      summary: Get Block Header
+      description: Get metadata of a given block.
+      operationId: get_block_header_getBlockHeader_get
+      parameters:
+        - required: true
+          schema:
+            title: Workchain
+            type: integer
+          name: workchain
+          in: query
+        - required: true
+          schema:
+            title: Shard
+            type: integer
+          name: shard
+          in: query
+        - required: true
+          schema:
+            title: Seqno
+            type: integer
+          name: seqno
+          in: query
+        - required: false
+          schema:
+            title: Root Hash
+            type: string
+          name: root_hash
+          in: query
+        - required: false
+          schema:
+            title: File Hash
+            type: string
+          name: file_hash
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /tryLocateTx:
+    get:
+      tags:
+        - transactions
+      summary: Get Try Locate Tx
+      description: Locate outcoming transaction of *destination* address by incoming message.
+      operationId: get_try_locate_tx_tryLocateTx_get
+      parameters:
+        - required: true
+          schema:
+            title: Source
+            type: string
+          name: source
+          in: query
+        - required: true
+          schema:
+            title: Destination
+            type: string
+          name: destination
+          in: query
+        - required: true
+          schema:
+            title: Created Lt
+            type: integer
+          name: created_lt
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /tryLocateResultTx:
+    get:
+      tags:
+        - transactions
+      summary: Get Try Locate Result Tx
+      description: Same as previous. Locate outcoming transaction of *destination* address by incoming message
+      operationId: get_try_locate_result_tx_tryLocateResultTx_get
+      parameters:
+        - required: true
+          schema:
+            title: Source
+            type: string
+          name: source
+          in: query
+        - required: true
+          schema:
+            title: Destination
+            type: string
+          name: destination
+          in: query
+        - required: true
+          schema:
+            title: Created Lt
+            type: integer
+          name: created_lt
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /tryLocateSourceTx:
+    get:
+      tags:
+        - transactions
+      summary: Get Try Locate Source Tx
+      description: Locate incoming transaction of *source* address by outcoming message.
+      operationId: get_try_locate_source_tx_tryLocateSourceTx_get
+      parameters:
+        - required: true
+          schema:
+            title: Source
+            type: string
+          name: source
+          in: query
+        - required: true
+          schema:
+            title: Destination
+            type: string
+          name: destination
+          in: query
+        - required: true
+          schema:
+            title: Created Lt
+            type: integer
+          name: created_lt
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /detectAddress:
+    get:
+      tags:
+        - accounts
+      summary: Detect Address
+      description: Get all possible address forms.
+      operationId: detect_address_detectAddress_get
+      parameters:
+        - description: Identifier of target TON account in any form.
+          required: true
+          schema:
+            title: Address
+            type: string
+            description: Identifier of target TON account in any form.
+          name: address
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /sendBoc:
+    post:
+      tags:
+        - send
+      summary: Send Boc
+      description: 'Send serialized boc file: fully packed and serialized external message to blockchain.'
+      operationId: send_boc_sendBoc_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_send_boc_sendBoc_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /sendQuery:
+    post:
+      tags:
+        - send
+      summary: Send Query
+      description: Send query - unpacked external message. This method takes address, body and init-params (if any), packs it to external message and sends to network. All params should be boc-serialized.
+      operationId: send_query_sendQuery_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_send_query_sendQuery_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /estimateFee:
+    post:
+      tags:
+        - send
+      summary: Estimate Fee
+      description: Estimate fees required for query processing. *body*, *init-code* and *init-data* accepted in serialized format (b64-encoded).
+      operationId: estimate_fee_estimateFee_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_estimate_fee_estimateFee_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /runGetMethod:
+    post:
+      tags:
+        - run method
+      summary: Run Get Method
+      description: Run get method on smart contract.
+      operationId: run_get_method_runGetMethod_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_run_get_method_runGetMethod_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponse'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+  /jsonRPC:
+    post:
+      tags:
+        - json rpc
+      summary: Jsonrpc Handler
+      description: 'All methods in the API are available through JSON-RPC protocol ([spec](https://www.jsonrpc.org/specification)). '
+      operationId: jsonrpc_handler_jsonRPC_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TonRequestJsonRPC'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TonResponseJsonRPC'
+        '422':
+          description: Validation Error
+        '504':
+          description: Lite Server Timeout
+      security:
+        - APIKeyQuery: []
+        - APIKeyHeader: []
+components:
+  schemas:
+    Body_estimate_fee_estimateFee_post:
+      title: Body_estimate_fee_estimateFee_post
+      required:
+        - address
+        - body
+      type: object
+      properties:
+        address:
+          title: Address
+          type: string
+          description: Address in any format
+        body:
+          title: Body
+          type: string
+          description: b64-encoded cell with message body
+        init_code:
+          title: Init Code
+          type: string
+          description: b64-encoded cell with init-code
+          default: ''
+        init_data:
+          title: Init Data
+          type: string
+          description: b64-encoded cell with init-data
+          default: ''
+        ignore_chksig:
+          title: Ignore Chksig
+          type: boolean
+          description: If true during test query processing assume that all chksig operations return True
+          default: true
+    Body_run_get_method_runGetMethod_post:
+      title: Body_run_get_method_runGetMethod_post
+      required:
+        - address
+        - method
+        - stack
+      type: object
+      properties:
+        address:
+          title: Address
+          type: string
+          description: Contract address
+        method:
+          title: Method
+          anyOf:
+            - type: string
+            - type: integer
+          description: Method name or method id
+        stack:
+          title: Stack
+          type: array
+          items:
+            type: array
+            items: {}
+          description: 'Array of stack elements: `[[''num'',3], [''cell'', cell_object], [''slice'', slice_object]]`'
+    Body_send_boc_sendBoc_post:
+      title: Body_send_boc_sendBoc_post
+      required:
+        - boc
+      type: object
+      properties:
+        boc:
+          title: Boc
+          type: string
+          description: b64 encoded bag of cells
+    Body_send_query_sendQuery_post:
+      title: Body_send_query_sendQuery_post
+      required:
+        - address
+        - body
+      type: object
+      properties:
+        address:
+          title: Address
+          type: string
+          description: Address in any format
+        body:
+          title: Body
+          type: string
+          description: b64-encoded boc-serialized cell with message body
+        init_code:
+          title: Init Code
+          type: string
+          description: b64-encoded boc-serialized cell with init-code
+          default: ''
+        init_data:
+          title: Init Data
+          type: string
+          description: b64-encoded boc-serialized cell with init-data
+          default: ''
+    TonRequestJsonRPC:
+      title: TonRequestJsonRPC
+      required:
+        - method
+      type: object
+      properties:
+        method:
+          title: Method
+          type: string
+        params:
+          title: Params
+          type: object
+          default: {}
+        id:
+          title: Id
+          type: string
+        jsonrpc:
+          title: Jsonrpc
+          type: string
+    TonResponse:
+      title: TonResponse
+      required:
+        - ok
+      type: object
+      properties:
+        ok:
+          title: Ok
+          type: boolean
+        result:
+          title: Result
+          anyOf:
+            - type: string
+            - type: array
+              items: {}
+            - type: object
+        error:
+          title: Error
+          type: string
+        code:
+          title: Code
+          type: integer
+    TonResponseJsonRPC:
+      title: TonResponseJsonRPC
+      required:
+        - ok
+      type: object
+      properties:
+        ok:
+          title: Ok
+          type: boolean
+        result:
+          title: Result
+          anyOf:
+            - type: string
+            - type: array
+              items: {}
+            - type: object
+        error:
+          title: Error
+          type: string
+        code:
+          title: Code
+          type: integer
+        jsonrpc:
+          title: Jsonrpc
+          type: string
+          default: '2.0'
+        id:
+          title: Id
+          type: string
+  securitySchemes:
+    APIKeyQuery:
+      type: apiKey
+      description: API key sent as query parameter
+      in: query
+      name: api_key
+    APIKeyHeader:
+      type: apiKey
+      description: API key sent as request header
+      in: header
+      name: X-API-Key
+tags:
+  - name: accounts
+    description: Information about accounts.
+  - name: blocks
+    description: Information about blocks.
+  - name: transactions
+    description: Fetching and locating transactions.
+  - name: run method
+    description: Run get method of smart contract.
+  - name: send
+    description: Send data to blockchain.
+  - name: json rpc
+    description: JSON-RPC endpoint.
