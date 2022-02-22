@@ -21,6 +21,10 @@ func NewClient() *Client {
 	}
 }
 
+func (c *Client) Accounts() Accounts {
+	return Accounts{c}
+}
+
 func (c *Client) Blocks() Blocks {
 	return Blocks{c}
 }
