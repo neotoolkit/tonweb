@@ -8,10 +8,6 @@
 
 Unofficial tonweb golang sdk
 
-## Features
-- Supports ...
-- Easy to integrate.
-
 ## Installation
 ```shell
 go get github.com/neotoolkit/tonweb
