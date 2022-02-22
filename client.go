@@ -37,6 +37,10 @@ func (c *Client) Run() Run {
 	return Run{c}
 }
 
+func (c *Client) Send() Send {
+	return Send{c}
+}
+
 func (c *Client) url() *url.URL {
 	var res url.URL
 	res.Scheme = c.Schema
