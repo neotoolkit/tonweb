@@ -28,6 +28,7 @@ func (r Run) RunGetMethod(b RunGetMethodBody) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	var res Response
 
