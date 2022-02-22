@@ -41,6 +41,10 @@ func (c *Client) Send() Send {
 	return Send{c}
 }
 
+func (c *Client) JsonRPC() JsonRPC {
+	return JsonRPC{c}
+}
+
 func (c *Client) url() *url.URL {
 	var res url.URL
 	res.Scheme = c.Schema
@@ -49,8 +53,8 @@ func (c *Client) url() *url.URL {
 }
 
 type Response struct {
-	Ok     bool   `json:"ok"`
-	Result any    `json:"result,omitempty"`
-	Error  string `json:"error,omitempty"`
-	Code   int32  `json:"code,omitempty"`
+	Ok     bool        `json:"ok"`
+	Result interface{} `json:"result,omitempty"`
+	Error  string      `json:"error,omitempty"`
+	Code   int32       `json:"code,omitempty"`
 }
