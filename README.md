@@ -1,4 +1,4 @@
-# README
+# TonWeb
 
 [![CI-img]][CI-url]
 [![pkg-img]][pkg-url]
@@ -6,7 +6,7 @@
 [![coverage-img]][coverage-url]
 [![version-img]][version-url]
 
-Description
+Unofficial tonweb golang sdk
 
 ## Features
 - Supports ...
@@ -14,12 +14,26 @@ Description
 
 ## Installation
 ```shell
-
+go get github.com/neotoolkit/tonweb
 ```
 
 ## Usage
 ```go
+package main
 
+import (
+	"fmt"
+
+	"github.com/neotoolkit/tonweb"
+)
+
+func main() {
+	c := tonweb.NewClient()
+
+	req, err := c.Blocks().GetConsensusBlock()
+
+	fmt.Println(req, err)
+}
 ```
 
 ## Documentation
