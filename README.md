@@ -6,7 +6,7 @@
 [![coverage-img]][coverage-url]
 [![version-img]][version-url]
 
-Unofficial tonweb golang sdk
+Unofficial tonweb golang client
 
 ## Installation
 ```shell
@@ -14,17 +14,19 @@ go get github.com/neotoolkit/tonweb
 ```
 
 ## Usage
+
 ```go
 package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/neotoolkit/tonweb"
 )
 
 func main() {
-	c := tonweb.NewClient()
+	c := tonweb.NewClient(os.Getenv("TONWEB_API_KEY"))
 
 	req, err := c.Blocks().GetConsensusBlock()
 
