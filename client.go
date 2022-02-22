@@ -9,14 +9,16 @@ type Client struct {
 	Schema   string
 	Host     string
 	BasePath string
+	APIKey   string
 	client   *http.Client
 }
 
-func NewClient() *Client {
+func NewClient(apiKey string) *Client {
 	return &Client{
 		Schema:   "https",
 		Host:     "toncenter.com",
 		BasePath: "/api/v2",
+		APIKey:   apiKey,
 		client:   http.DefaultClient,
 	}
 }
