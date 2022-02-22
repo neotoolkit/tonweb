@@ -6,7 +6,7 @@
 [![coverage-img]][coverage-url]
 [![version-img]][version-url]
 
-Unofficial tonweb golang client
+Unofficial Golang SDK for TON (The Open Network)
 
 ## Installation
 ```shell
