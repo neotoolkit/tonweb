@@ -29,6 +29,10 @@ func (c *Client) Blocks() Blocks {
 	return Blocks{c}
 }
 
+func (c *Client) Transactions() Transactions {
+	return Transactions{c}
+}
+
 func (c *Client) url() *url.URL {
 	var res url.URL
 	res.Scheme = c.Schema
